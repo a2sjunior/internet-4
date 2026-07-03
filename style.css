@@ -1,0 +1,118 @@
+/* Definição das Variáveis de Cores (Light Mode por padrão) */
+:root {
+    --bg-color: #f4f6f9;
+    --text-color: #333333;
+    --card-bg: #ffffff;
+    --primary-color: #3498db;
+    --border-color: #dddddd;
+}
+
+/* Variáveis para o Modo Escuro */
+body.dark-theme {
+    --bg-color: #1a1a2e;
+    --text-color: #e6e6e6;
+    --card-bg: #16213e;
+    --primary-color: #e94560;
+    --border-color: #0f3460;
+}
+
+/* Aplicação Global das Variáveis */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin-bottom: 20px;
+}
+
+h1 {
+    font-size: 3em;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.4s, color 0.4s;
+    padding: 20px;
+}
+
+header {
+    margin-bottom: 30px;
+}
+
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.btn-tema {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+nav a {
+    display: inline-block;
+    margin-right: 10px;
+    padding: 10px 15px;
+    background-color: var(--primary-color);
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.card {
+    background-color: var(--card-bg);
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+/* Estilos de Formulário */
+input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+button[type="submit"] {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.erro {
+    padding: 10px 5px;
+    margin-top: 10px;
+    color: #e74c3c;
+    font-size: 0.9em;
+    display: block;
+}
+
+.youtube-video{
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    width: 515px;
+    height: 350px;
+    overflow: hidden;
+    z-index: 10;
+}

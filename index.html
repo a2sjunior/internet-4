@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini SPA</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <div class="header-top">
+            <h1>Aplicação Dinâmica</h1>
+            <button id="btn-tema" class="btn-tema">🌙 Modo Escuro</button>
+        </div>
+        
+        <nav>
+            <a href="#home" class="nav-link">Início</a>
+            <a href="#player" class="nav-link">Vídeo Player</a>
+            <a href="#cadastro" class="nav-link">Cadastro</a>
+        </nav>
+    </header>
+
+    <main id="app">
+        <p class="loading">Carregando aplicação...</p>
+    </main>
+
+    <section class="youtube-video">
+        <h2>Assista ao nosso vídeo</h2>
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/B4kXnads4eU?si=aS1jlmR_LYgylIK8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>
