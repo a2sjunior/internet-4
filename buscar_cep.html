@@ -4,11 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Buscar CEP</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        input {
+            padding: 5px;
+            font-size: 16px;
+        }
+        button {
+            padding: 5px 10px;
+            font-size: 16px;
+        }
+        #cep{
+            width: 250px;
+        }
+        #result p {
+            margin: 5px 0;
+        }    
+    </style>
 </head>
 <body>
     <h1>Buscar CEP</h1>
     <form id="cepForm">
-        <input type="text" id="cep" placeholder="Digite o CEP" maxlength="8">
+        <input type="text" id="cep" placeholder="Digite apenas os números do CEP" maxlength="8">
         <button type="submit">Buscar</button>
     </form>
     <div id="result"></div>
@@ -23,6 +46,7 @@
                         if (data.erro) {
                             document.getElementById('result').innerHTML = 'CEP não encontrado.';
                         } else {
+                            console.log(data);
                             document.getElementById('result').innerHTML = `
                                 <p>Logradouro: ${data.logradouro}</p>
                                 <p>Bairro: ${data.bairro}</p>
