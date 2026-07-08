@@ -187,7 +187,7 @@ function configurarEventosFormulario() {
         } else {
             const spanSucesso = document.createElement('span');
             spanSucesso.style.color = '#2ecc71';
-            spanSucesso.innerHTML = `<strong>Sucesso!</strong> Obrigado, ${inputNome.value}.`;
+            spanSucesso.innerHTML = `<div style="padding: 10px"><strong>Sucesso!</strong> Obrigado, ${inputNome.value}.</div>`;
             boxMensagem.appendChild(spanSucesso);
             form.reset();
         }

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD Completo - API Fake</title>
+    <style>
+        :root {
+            --primaria: #3498db;
+            --sucesso: #2ecc71;
+            --perigo: #e74c3c;
+            --fundo: #f4f6f9;
+            --texto: #333;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--fundo);
+            color: var(--texto);
+            padding: 20px;
+        }
+
+        .contentor {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--primaria);
+        }
+
+        /* Estilos do Formulário (Create / Update) */
+        .formulario-crud {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #fdfdfd;
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+        }
+
+        input, textarea {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1rem;
+            width: 100%;
+        }
+
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            color: white;
+            transition: opacity 0.3s;
+        }
+
+        button:hover { opacity: 0.8; }
+        
+        .btn-salvar { background-color: var(--sucesso); }
+        .btn-editar { background-color: var(--primaria); padding: 5px 10px; font-size: 0.9rem; }
+        .btn-eliminar { background-color: var(--perigo); padding: 5px 10px; font-size: 0.9rem; }
+
+        /* Estilos da Lista (Read) */
+        .lista-posts {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .post-card {
+            border: 1px solid #eee;
+            padding: 15px;
+            border-radius: 6px;
+            background: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .post-card h3 { color: var(--primaria); }
+        
+        .post-acoes {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .escondido { display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="contentor">
+        <h1>Editor de Publicações (CRUD)</h1>
+
+        <!-- Formulário para Criar ou Editar (Create / Update) -->
+        <form id="formPost" class="formulario-crud">
+            <h3>Criar / Editar Publicação</h3>
+            
+            <!-- Campo oculto para guardar o ID quando estamos editando -->
+            <input type="hidden" id="postId">
+            
+            <input type="text" id="postTitulo" placeholder="Título da publicação" required>
+            <textarea id="postCorpo" rows="3" placeholder="Escreva o conteúdo aqui..." required></textarea>
+            
+            <button type="submit" class="btn-salvar" id="btnSubmit">Gravar Publicação</button>
+            <button type="button" class="btn-eliminar escondido" id="btnCancelar">Cancelar Edição</button>
+        </form>
+
+        <!-- Lista onde os dados serão injetados (Read) -->
+        <ul id="listaPosts" class="lista-posts">
+            <p id="carregando">Carregando dados do servidor...</p>
+        </ul>
+    </div>
+
+    <script>
+        // URL base da Fake API para Posts
+        const API_URL = "https://jsonplaceholder.typicode.com/posts";
+
+        // Elementos do DOM
+        const formPost = document.getElementById('formPost');
+        const inputId = document.getElementById('postId');
+        const inputTitulo = document.getElementById('postTitulo');
+        const inputCorpo = document.getElementById('postCorpo');
+        const listaPosts = document.getElementById('listaPosts');
+        const btnSubmit = document.getElementById('btnSubmit');
+        const btnCancelar = document.getElementById('btnCancelar');
+
+        // ==========================================
+        // 1. READ (Ler dados - GET)
+        // ==========================================
+        async function carregarPosts() {
+            try {
+                // Buscamos apenas 5 posts (?_limit=5)
+                const resposta = await fetch(`${API_URL}?_limit=5`);
+                const posts = await resposta.json();
+                
+                listaPosts.innerHTML = ""; // Limpa o "Carregando..."
+                
+                posts.forEach(post => {
+                    adicionarPostAPagina(post, false);
+                });
+            } catch (erro) {
+                console.error("Erro ao carregar:", erro);
+                listaPosts.innerHTML = "<p>Erro ao carregar as publicações.</p>";
+            }
+        }
+
+        // Função auxiliar para criar o HTML de um post na página
+        function adicionarPostAPagina(post, noTopo = false) {
+            const li = document.createElement('li');
+            li.className = 'post-card';
+            li.id = `post-${post.id}`; // Dá um ID único ao elemento HTML
+            
+            li.innerHTML = `
+                <h3 class="post-titulo">${post.title}</h3>
+                <p class="post-corpo">${post.body}</p>
+                <div class="post-acoes">
+                    <button class="btn-editar" onclick="prepararEdicao(${post.id})">Editar</button>
+                    <button class="btn-eliminar" onclick="eliminarPost(${post.id})">Eliminar</button>
+                </div>
+            `;
+
+            if (noTopo) {
+                listaPosts.prepend(li); // Adiciona no início da lista
+            } else {
+                listaPosts.append(li); // Adiciona no final
+            }
+        }
+
+        // ==========================================
+        // 2 & 3. CREATE (POST) / UPDATE (PUT)
+        // ==========================================
+        formPost.addEventListener('submit', async (evento) => {
+            evento.preventDefault(); // Evita recarregar a página
+
+            const postDados = {
+                title: inputTitulo.value,
+                body: inputCorpo.value,
+                userId: 1 // Na API fake é obrigatório enviar um userId
+            };
+
+            const idAtual = inputId.value; // Verifica se o input oculto tem um ID
+
+            try {
+                if (idAtual) {
+                    // SE TEM ID -> UPDATE (Método PUT)
+                    const resposta = await fetch(`${API_URL}/${idAtual}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(postDados)
+                    });
+                    const postAtualizado = await resposta.json();
+                    
+                    // Atualiza o DOM (Interface) sem recarregar a página
+                    const postNaPagina = document.getElementById(`post-${idAtual}`);
+                    postNaPagina.querySelector('.post-titulo').textContent = postAtualizado.title;
+                    postNaPagina.querySelector('.post-corpo').textContent = postAtualizado.body;
+                    
+                    alert("Publicação atualizada com sucesso!");
+                    limparFormulario();
+
+                } else {
+                    // SE NÃO TEM ID -> CREATE (Método POST)
+                    const resposta = await fetch(API_URL, {
+                        method: 'POST',
+                        headers: { 
+                            'Content-Type': 'application/json; charset=UTF-8', 
+                        },
+                        body: JSON.stringify(postDados)
+                    });
+                    const postNovo = await resposta.json();
+                    
+                    // A API Fake devolve sempre ID 101. Adicionamos um Random para não duplicar IDs no DOM visualmente
+                    postNovo.id = Math.floor(Math.random() * 1000) + 100; 
+
+                    adicionarPostAPagina(postNovo, true);
+                    alert("Publicação criada com sucesso!");
+                    limparFormulario();
+                }
+            } catch (erro) {
+                console.error("Erro ao guardar:", erro);
+            }
+        });
+
+        // Função que preenche o formulário quando clicamos em "Editar"
+        window.prepararEdicao = function(id) {
+            const postNaPagina = document.getElementById(`post-${id}`);
+            
+            // Pega os textos diretamente página e coloca nos inputs
+            inputTitulo.value = postNaPagina.querySelector('.post-titulo').textContent;
+            inputCorpo.value = postNaPagina.querySelector('.post-corpo').textContent;
+            inputId.value = id; // Guarda o ID no input oculto
+
+            // Muda o aspeto do formulário
+            btnSubmit.textContent = "Atualizar Publicação";
+            btnSubmit.style.backgroundColor = "var(--primaria)";
+            btnCancelar.classList.remove("escondido");
+            
+            // Rola a tela para o topo
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        // ==========================================
+        // 4. DELETE (Eliminar - DELETE)
+        // ==========================================
+        window.eliminarPost = async function(id) {
+            const confirmacao = confirm("Tem a certeza que deseja eliminar esta publicação?");
+            if (!confirmacao) return;
+
+            try {
+                // Requisição DELETE para a API
+                const resposta = await fetch(`${API_URL}/${id}`, {
+                    method: 'DELETE'
+                });
+
+                if (resposta.ok) {
+                    // Se a API responder OK (200), removemos o elemento da página
+                    const postNaPagina = document.getElementById(`post-${id}`);
+                    postNaPagina.remove();
+                }
+            } catch (erro) {
+                console.error("Erro ao eliminar:", erro);
+            }
+        };
+
+        // Funções Utilitárias
+        function limparFormulario() {
+            formPost.reset(); // Limpa os campos visíveis
+            inputId.value = ""; // Limpa o ID oculto
+            btnSubmit.textContent = "Gravar Publicação";
+            btnSubmit.style.backgroundColor = "var(--sucesso)";
+            btnCancelar.classList.add("escondido");
+        }
+
+        btnCancelar.addEventListener('click', limparFormulario);
+
+        // Inicia a aplicação carregando os dados
+        carregarPosts();
+    </script>
+</body>
+</html>
