@@ -124,6 +124,11 @@ function configurarEventosVideo() {
             video.pause();
             console.log("Vídeo pausado por falta de visibilidade.");
         }
+        // else if (document.visibilityState === 'visible' && video.paused) {
+        //     // Se a aba voltar a ficar visível, podemos opcionalmente retomar o vídeo
+        //     video.play(); // Descomente se quiser que o vídeo volte a tocar automaticamente
+        //     console.log("A aba voltou a ficar visível.");
+        // }
     };
 
     // Adiciona o ouvinte de visibilidade
