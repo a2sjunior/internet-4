@@ -123,7 +123,7 @@
             <input type="text" id="postTitulo" placeholder="Título da publicação" required>
             <textarea id="postCorpo" rows="3" placeholder="Escreva o conteúdo aqui..." required></textarea>
             
-            <button type="submit" class="btn-salvar" id="btnSubmit">Gravar Publicação</button>
+            <button type="submit" class="btn-salvar" id="btnSubmit">Salvar Publicação</button>
             <button type="button" class="btn-eliminar escondido" id="btnCancelar">Cancelar Edição</button>
         </form>
 
@@ -177,7 +177,7 @@
                 <p class="post-corpo">${post.body}</p>
                 <div class="post-acoes">
                     <button class="btn-editar" onclick="prepararEdicao(${post.id})">Editar</button>
-                    <button class="btn-eliminar" onclick="eliminarPost(${post.id})">Eliminar</button>
+                    <button class="btn-eliminar" onclick="eliminarPost(${post.id})">Excluir</button>
                 </div>
             `;
 

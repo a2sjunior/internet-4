@@ -7,7 +7,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            margin: 20px;            
         }
         form {
             margin-bottom: 20px;
@@ -20,38 +20,48 @@
             padding: 5px 10px;
             font-size: 16px;
         }
+        #main {
+            max-width: 400px;
+            margin: auto;
+        }
         #cep{
             width: 250px;
         }
-        #result p {
+        #result p{
             margin: 5px 0;
+            padding: 5px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
         }    
     </style>
 </head>
 <body>
-    <h1>Buscar CEP</h1>
-    <form id="cepForm">
-        <input type="text" id="cep" placeholder="Digite apenas os números do CEP" maxlength="8">
-        <button type="submit">Buscar</button>
-    </form>
+    <main id="main">
+        <h1>Buscar CEP</h1>
+        <form id="cepForm">
+            <input type="text" id="cep" placeholder="Digite apenas os números do CEP" maxlength="8">
+            <button type="submit">Buscar</button>
+        </form>
+    
     <div id="result"></div>
+    </main>
     <script>
         document.getElementById('cepForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const cep = document.getElementById('cep').value;
+            event.preventDefault(); // Impede o envio do formulário
+            const cep = document.getElementById('cep').value; // Obtém o valor do CEP digitado
             if (cep.length === 8) {
                 fetch(`https://viacep.com.br/ws/${cep}/json/`)
                     .then(response => response.json())
-                    .then(data => {
-                        if (data.erro) {
+                    .then(endereco => {
+                        if (endereco.erro) {
                             document.getElementById('result').innerHTML = 'CEP não encontrado.';
                         } else {
-                            console.log(data);
+                            console.log(endereco);
                             document.getElementById('result').innerHTML = `
-                                <p>Logradouro: ${data.logradouro}</p>
-                                <p>Bairro: ${data.bairro}</p>
-                                <p>Cidade: ${data.localidade}</p>
-                                <p>Estado: ${data.uf}</p>
+                                <p>Logradouro: ${endereco.logradouro}</p>
+                                <p>Bairro: ${endereco.bairro}</p>
+                                <p>Cidade: ${endereco.localidade}</p>
+                                <p>Estado: ${endereco.uf}</p>
                             `;
                         }
                     })
